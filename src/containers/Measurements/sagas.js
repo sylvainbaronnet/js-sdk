@@ -9,9 +9,9 @@ import {
 } from './constants';
 
 function* watchData(msgSource) {
-  let response = yield call(msgSource.nextMessage)
 
-  while(response) {
+  while(true) {
+    let response = yield call(msgSource.nextMessage)
     let data = {};
 
     if(response.length > 0) {
@@ -27,12 +27,7 @@ function* watchData(msgSource) {
       }
     }
     yield put(requestDataSuccess(data))
-    response = yield call(msgSource.nextMessage)
   }
-
-  // Reload if stream ended
-  // yield call(delay, 5 * 1000);
-  // yield put(getDataOnLoad());
 }
 
 function* getDataOnLoad() {
