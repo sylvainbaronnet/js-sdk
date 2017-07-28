@@ -1,4 +1,4 @@
-
+import EventSource from 'eventsource';
 
 function createSource(url) {
   const source = new EventSource(url);
