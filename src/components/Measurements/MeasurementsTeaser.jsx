@@ -1,4 +1,5 @@
 import React from 'react';
+import MeasurementsTeaserValues from './MeasurementsTeaserValues'
 
 function MeasurementsTeaser({ data }) {
   return (
@@ -10,7 +11,9 @@ function MeasurementsTeaser({ data }) {
         {data.name}
       </td>
       <td style={{maxWidth:450, overflow:'hidden'}}>
-        {data.measurements}
+        <MeasurementsTeaserValues
+          values={data.measurements}
+        />
       </td>
       <td>{data.unit}</td>
 
