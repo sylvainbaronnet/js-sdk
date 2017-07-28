@@ -1,7 +1,14 @@
-import EventSource from 'eventsource';
+import EventSourceServer from 'eventsource';
 
 function createSource(url) {
-  const source = new EventSource(url);
+  let ES;
+  if(!window['EventSource']) {
+    ES = EventSourceServer;
+  } else {
+    ES = EventSource;
+  }
+
+  const source = new ES(url);
   let deferred;
 
   source.onmessage = event => {
