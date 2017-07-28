@@ -1,6 +1,6 @@
-import { takeLatest, call, put, select } from 'redux-saga/effects';
+import { take, call, put, fork } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
-import request from 'utils/request';
+import createSource from 'utils/requestSSE';
 import {
   requestData,
   requestDataSuccess,
@@ -10,22 +10,41 @@ import {
   API_URL_BASE,
 } from './constants';
 
-/**
- * Root saga manages watcher lifecycle
- */
-function* watchRequestDataSaga() {
-  yield takeLatest(REQUEST_DATA, requestDataSaga);
+
+function* watchData(msgSource) {
+  let response = yield call(msgSource.nextMessage)
+  var i = 0;
+  while(response && i < 20) {i++;
+    let data = {};
+
+    if(response.length > 0) {
+      for(const r of response) {
+        if(r.measurements.length < 1) continue;
+
+        data[r.name] = {
+          measurements: r.measurements,
+          unit: r.unit,
+          id: r._id,
+        };
+      }
+    }
+    yield put(requestDataSuccess(data))
+    response = yield call(msgSource.nextMessage)
+  }
+
+  // Reload if stream ended
+  // yield call(delay, 5 * 1000);
+  // yield put(getDataOnLoad());
 }
 
-function* requestDataSaga() {
 
-/*
-  yield put(requestDataSuccess(
-      [],
-    ));
-*/
+function* getDataOnLoad() {
+  const msgSource = yield call(createSource, API_URL_BASE);
+  yield fork(watchData, msgSource);
 }
+
+
 
 export default [
-  watchRequestDataSaga,
+  getDataOnLoad,
 ];

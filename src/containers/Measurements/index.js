@@ -17,7 +17,7 @@ class Measurements extends Component {
 }
 
 Measurements.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.object,
   isFetching: PropTypes.bool,
 };
 

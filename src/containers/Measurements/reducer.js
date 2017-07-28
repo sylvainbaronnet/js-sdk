@@ -1,11 +1,11 @@
 import { fromJS } from 'immutable';
 import {
   REQUEST_DATA,
-  SET_DATA,
+  REQUEST_DATA_SUCCESS,
 } from './constants';
 
 const intialState = fromJS({
-  data: [],
+  data: {},
 });
 
 export default function(state = intialState, action) {
@@ -13,9 +13,9 @@ export default function(state = intialState, action) {
     case REQUEST_DATA: {
       return state.set('isFetching', true);
     }
-    case SET_DATA: {
+    case REQUEST_DATA_SUCCESS: {
       return state.merge({
-        data: action.data,
+        data: {...state.get('data').toJS(), ...action.data},
         isFetching: false,
       });
     }
