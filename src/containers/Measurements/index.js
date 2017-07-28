@@ -7,10 +7,6 @@ import { requestData } from './actions';
 import { selectData } from './selectors';
 
 class Measurements extends Component {
-  componentWillMount() {
-
-  }
-
   render() {
     return <MeasurementsList data={this.props.data} />;
   }
