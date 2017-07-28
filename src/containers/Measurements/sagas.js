@@ -1,20 +1,17 @@
-import { take, call, put, fork } from 'redux-saga/effects';
-import { delay } from 'redux-saga';
+import { call, put, fork } from 'redux-saga/effects';
+// import { delay } from 'redux-saga';
 import createSource from 'utils/requestSSE';
 import {
-  requestData,
   requestDataSuccess,
 } from './actions';
 import {
-  REQUEST_DATA,
   API_URL_BASE,
 } from './constants';
 
-
 function* watchData(msgSource) {
   let response = yield call(msgSource.nextMessage)
-  var i = 0;
-  while(response && i < 20) {i++;
+
+  while(response) {
     let data = {};
 
     if(response.length > 0) {
@@ -22,6 +19,7 @@ function* watchData(msgSource) {
         if(r.measurements.length < 1) continue;
 
         data[r.name] = {
+          name: r.name,
           measurements: r.measurements,
           unit: r.unit,
           id: r._id,
@@ -37,13 +35,10 @@ function* watchData(msgSource) {
   // yield put(getDataOnLoad());
 }
 
-
 function* getDataOnLoad() {
   const msgSource = yield call(createSource, API_URL_BASE);
   yield fork(watchData, msgSource);
 }
-
-
 
 export default [
   getDataOnLoad,
